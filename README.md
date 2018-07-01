@@ -1,1 +1,8 @@
 # python-projects
+personal python projects
+
+## /spotipy
+* collection of scripts interacting with the [Spotify API](https://spotipy.readthedocs.io/en/latest/) for Python
+
+## /anki
+* scripts to facilitate migrating data from incompatible file types to [Anki](https://apps.ankiweb.net/) decks
