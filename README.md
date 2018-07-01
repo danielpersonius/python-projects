@@ -1,6 +1,9 @@
 # python-projects
 personal python projects
 
+## /ml
+* machine learning and data science themed
+
 ## /spotipy
 * collection of scripts interacting with the [Spotify API](https://spotipy.readthedocs.io/en/latest/) for Python
 
