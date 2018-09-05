@@ -2,4 +2,5 @@
 */.ipynb_checkpoints*
 .DS_Store
 */.DS_Store
-
+spotipy/*.txt
+spotipy/\.cache-my-username
