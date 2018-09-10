@@ -1,6 +1,9 @@
 # python-projects
 personal python projects
 
+## todo
+* eliminate duplicated lines throughout spotipy/
+
 ## /ml
 * machine learning and data science themed
 
