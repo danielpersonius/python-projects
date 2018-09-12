@@ -6,3 +6,4 @@ spotipy/*.txt
 spotipy/\.cache-my-username
 **/.cache*
 **/*artwork
+**/save/*
