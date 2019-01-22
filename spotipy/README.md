@@ -1,5 +1,5 @@
 # Spotipy projects
-scripts utilizing Spotipy, a python-based implementation of the Spotify API, for convenient automation, functionality extensions, data exporation
+scripts utilizing Spotipy, a python-based implementation of the Spotify API, for convenient automation, functionality extensions, data exploration
 
 ## project descriptions 
 
