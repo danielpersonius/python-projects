@@ -34,11 +34,11 @@ class SpotipyGui:
             urllib.request.urlretrieve(url, "/".join([directory,filename]))
 
     def set_background(self, image_path="background.jpg"):
-        self.get_image(image_path)
+        self.get_image(image_path, 15, 15)
         # convert cv2 image to pillow Image
         self.background_photo = PIL.Image.fromarray(self.blurred_image)
         # resize to fit canvas
-        self.background_photo = self.resize_image(self.background_photo, self.width, self.height)
+        self.background_photo = self.resize_image(self.background_photo, self.width, self.width)
         # convert Image to PhotoImage
         self.background_photo = PIL.ImageTk.PhotoImage(image = self.background_photo)
         # Add a PhotoImage to the Canvas
@@ -51,14 +51,14 @@ class SpotipyGui:
 
     def set_text(self, track_title="None", album_title="None", artist_name="None"):
         # track
-        track_text_id = self.canvas.create_text((self.width/2), (self.height/2), text=track_title, fill='white', font=('Helvetica', 60), anchor=tkinter.CENTER)
+        track_text_id = self.canvas.create_text((self.width/2), (self.height/2 - 60), text=track_title, fill='white', font=('Helvetica', 60), anchor=tkinter.CENTER)
         # bounding box coordinates (x0, y0, x1, y1)
         track_text_coords = self.canvas.bbox(track_text_id)
         # album
-        album_text_id = self.canvas.create_text((self.width/2), (self.height/2 + 60), text=album_title, fill='white', font=('Helvetica', 40), anchor=tkinter.CENTER)
+        album_text_id = self.canvas.create_text((self.width/2), (self.height/2), text=album_title, fill='white', font=('Helvetica', 40), anchor=tkinter.CENTER)
         album_text_coords = self.canvas.bbox(album_text_id)
         # artist
-        artists_text_id = self.canvas.create_text((self.width/2), (self.height/2 + 105), text=artist_name, fill='white', font=('Helvetica', 25), anchor=tkinter.CENTER)
+        artists_text_id = self.canvas.create_text((self.width/2), (self.height/2 + 48), text=artist_name, fill='white', font=('Helvetica', 25), anchor=tkinter.CENTER)
         artists_text_coords = self.canvas.bbox(artists_text_id)
         
         # get widest text box x coordinates
@@ -72,7 +72,7 @@ class SpotipyGui:
         text_background_id = self.canvas.create_rectangle(min_x_coord - 25,\
                                                           track_text_coords[1] - 5,\
                                                           max_x_coord + 25,\
-                                                          artists_text_coords[1] + 50,\
+                                                          artists_text_coords[1] + 40,\
                                                           fill='black')
         # bring text to front
         self.canvas.tag_raise(track_text_id)
@@ -131,33 +131,36 @@ class SpotipyGui:
         todo: refactor to follow single responsibility and avoid magic numbers
         '''
         # awkward
-        if playback is None:
-            playback = {
-                'currently_playing_type': None,
-                'track_title': None,
-                'album_title': None,
-                'artists': None,
-                'image_url': None
-            }
-            
-        request = urllib.request.Request(url)
-        request.add_header('Authorization', "Bearer " + token)
-        new_playback = self.get_playback(request)
+        #if playback is None:
+        new_playback = {
+            'currently_playing_type': None,
+            'track_title': None,
+            'album_title': None,
+            'artists': None,
+            'image_url': None
+        }
+        
+        try:
+            request = urllib.request.Request(url)
+            request.add_header('Authorization', "Bearer " + token)
+            new_playback = self.get_playback(request)
 
-        if new_playback != playback:
-            self.playback = new_playback
-            # update GUI
-            if new_playback['currently_playing_type'] == 'track':
-                self.download_image(new_playback['image_url'])
-                image_path = "/".join([self.image_directory, self.image_filename])
-                self.set_background(image_path)
-                self.set_foreground(self.cv_image, self.height-300, self.height-300)
-                artist_names = ", ".join(new_playback['artists'])
-                self.set_text(new_playback['track_title'], new_playback['album_title'], artist_names)
-            else:
-                self.set_background("img/background.jpg")
-                self.set_foreground(self.cv_image, self.height-300, self.height-300)
-                self.set_text("Episode", "", "")
+            if new_playback != playback:
+                self.playback = new_playback
+                # update GUI
+                if new_playback['currently_playing_type'] == 'track':
+                    self.download_image(new_playback['image_url'])
+                    image_path = "/".join([self.image_directory, self.image_filename])
+                    self.set_background(image_path)
+                    self.set_foreground(self.cv_image, self.height-350, self.height-350)
+                    artist_names = ", ".join(new_playback['artists'])
+                    self.set_text(new_playback['track_title'], new_playback['album_title'], artist_names)
+                else:
+                    self.set_background("img/background.jpg")
+                    self.set_foreground(self.cv_image, self.height-400, self.height-400)
+                    self.set_text("Episode", "", "")
+        except Exception as e:
+            print(e)
         self.window.after(500, self.poll_endpoint, token, url, new_playback)
             
     def __init__(self, window, window_title, height=1000, width=1000, image_path="background.jpg"):
